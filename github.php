@@ -29,7 +29,6 @@ foreach ( $gRepos as $repo ) {
 	$data = get( "$gEndpoint/repos/$repo/pulls?state=all&$gCredentials" );
 	foreach ( $data as $datum ) {
 		if ( in_array( $datum->user->login, $gUsers ) ) {
-			echo "<pre>" . $repo . ' ' . $datum->merged_at . "</pre>";
 			$icon = '';
 			$class = 'text-center status ';
 			$title = $datum->state;
