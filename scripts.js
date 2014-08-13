@@ -1,8 +1,8 @@
 var spinner = [];
 $( document ).ready( function () {
 	get( '.gerrit', 'gerrit.php', 'Wikimedia' );
-	get( '.github', 'github.php', 'SAMtools' );
-	get( '.openrw', 'openrw.php', 'OpenRW' );
+	get( '.github', 'github.php', 'Github' );
+	get( '.openrw', 'openrw.php', 'Bitbucket' );
 } );
 
 function get( selector, url, description ) {
