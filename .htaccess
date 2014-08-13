@@ -1,0 +1,5 @@
+# quick hack
+<Files credentials.ini>
+	order allow,deny
+	deny from all
+</Files>
