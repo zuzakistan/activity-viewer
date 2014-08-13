@@ -1,12 +1,13 @@
 <?php
 $gEndpoint = 'https://api.github.com';
 $credentials = parse_ini_file( 'credentials.ini' );
-$gCredentials = 'client_id=' . $credentials->github->id;
-$gCredentials .= '&client_secret=' . $credentials->github->secret;
+$gCredentials = 'client_id=' . $credentials['id'];
+$gCredentials .= '&client_secret=' . $credentials['secret'];
 
 $gRepos = array(
 	'samtools/samtools',
-	'wtsi-hgi/seq_autoqc'
+	'wtsi-hgi/seq_autoqc',
+	'samtools/htslib'
 );
 
 $gUsers = array(
@@ -67,7 +68,7 @@ foreach ( $gRepos as $repo ) {
 				$class .= 'text-danger';
 			} else if ( $status->state == 'success' ) {
 				$icon = 'fa-thumbs-up';
-				$text .= 'text-success';
+				$class .= 'text-success';
 			} else if ( $status->state == 'error' ) {
 				$icon = 'fa-exclamation';
 				$class .= 'text-warning';
