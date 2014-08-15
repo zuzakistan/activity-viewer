@@ -75,7 +75,7 @@ function parse_gerrit( $data ) {
 		$class .= 'info';
 	}
 	$columns = [
-		array( "<i title=\"" . $title . "\" class=\"fa $icon fa-fw text-center\"></i>", $class ),
+		array( "<i title=\"" . $title . "\" class=\"fa $icon fa-fw text-center\"></i><span class=\"fallback\">" . $data->status . '</span>', $class ),
 		get_project( $data->project ),
 		'<a href="' . $gEndpoint . '/r/' . $data->_number . '">' . $data->subject . '</a>',
 		'<a href="' . $gEndpoint . '/r/q/owner:' . urlencode( $data->owner->name ) . ',n,z">' .
@@ -138,6 +138,7 @@ function calc_state( $data, $status, $raw = false ) {
 	$response .= '" class="' . $ret[0];
 	$response .= '"><i class="fa fa-fw ' . $ret[1];
 	$response .= '"></i>&nbsp;</span>';
+	$respose .= '<span class="fallback">' . $ret[0] . '</span>';
 	return $response;
 }
 function get_gravatar( $email ) {

@@ -52,7 +52,7 @@ foreach ( $gRepos as $repo ) {
 				$title = "Pull request is $title.";
 			}
 
-			$state = array( "<i title=\"$title\" class=\"fa $icon fa-fw text-center\"></i>", $class );
+			$state = array( "<i title=\"$title\" class=\"fa $icon fa-fw text-center\"></i><span class=\"fallback\">$title</span>", $class );
 
 			$statuses = get( $datum->statuses_url . '?' . $gCredentials );
 			$status = array_shift( $statuses );
