@@ -19,8 +19,8 @@ echo construct_row( [
 	'Project',
 	'Summary',
 	'User',
+	'<abbr title="Code-Review">CR</abbr>',
 	'<abbr title="Verified">V</abbr>',
-	'<abbr title="Code-Review">CR</abbr>'
 	], 'h' );
 foreach( $res as $change ) {
 	echo parse_gerrit( get_gerrit( $change->change_id ) );
@@ -82,8 +82,8 @@ function parse_gerrit( $data ) {
 		'<img class="gravatar" src="' . get_gravatar( $data->owner->email ) . '?s=25&d=blank" />&nbsp;' . $data->owner->name .
 		'</a>',
 
+		calc_state( $data, 'Code-Review' ),
 		calc_state( $data, 'Verified' ),
-		calc_state( $data, 'Code-Review' )
 	];
 	// classes:
 	return construct_row( $columns, 'd' ); //$class );
