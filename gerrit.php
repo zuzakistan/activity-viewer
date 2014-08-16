@@ -13,7 +13,7 @@ $qString = substr( $qString, 0, strlen( $qString ) - 4 );
 $qString = $gEndpoint . '/r/changes/?q=' . urlencode( $qString );
 
 $res = get( $qString );
-echo '<table class="table">';
+/*echo '<table class="table">';
 echo construct_row( [
 	array( '<abbr title="Wikimedia Foundation">WMF</abbr>', 'text-info text-center status' ),
 	'Project',
@@ -21,11 +21,11 @@ echo construct_row( [
 	'User',
 	'<abbr title="Code-Review">CR</abbr>',
 	'<abbr title="Verified">V</abbr>',
-	], 'h' );
+], 'h' );*/
 foreach( $res as $change ) {
 	echo parse_gerrit( get_gerrit( $change->change_id ) );
 }
-echo "</table>";
+//echo "</table>";
 
 
 
@@ -81,7 +81,7 @@ function parse_gerrit( $data ) {
 		get_project( $data->project ),
 		'<a href="' . $gEndpoint . '/r/' . $data->_number . '">' . $data->subject . '</a>',
 		'<a href="' . $gEndpoint . '/r/q/owner:' . urlencode( $data->owner->name ) . ',n,z">' .
-		'<img class="gravatar" src="' . get_gravatar( $data->owner->email ) . '?s=25&d=blank" />&nbsp;' . $data->owner->name .
+		'<img class="gravatar" src="' . get_gravatar( $data->owner->email ) . '?s=25&d=blank" title="' . $data->owner->name . '"/>' . //$data->owner->name .
 		'</a>',
 
 		calc_state( $data, 'Code-Review', $aband ),
@@ -116,12 +116,12 @@ function construct_row( $row, $type = 'd', $class = '' ) {
 function calc_state( $data, $status, $aband, $raw = false ) {
 	$labels = $data->labels->{$status};
 	$states = [
-		['rejected', 'fa-ban text-danger','-2'],
+		['rejected', 'fa-times text-danger','-2'],
 		['approved','fa-check text-success','+2'],
 		['disliked', 'fa-thumbs-down text-danger','-1'],
 		['recommended', 'fa-thumbs-up text-success','+1'],
 	];
-	$ret = ['neutral', 'fa-circle-o text-muted', '0'];
+	$ret = ['neutral', 'fa-circle-o text-info', '0'];
 	foreach ( $states as $state ) {
 		if ( property_exists( $labels, $state[0] ) ) {
 			$ret = $state;
@@ -137,7 +137,7 @@ function calc_state( $data, $status, $aband, $raw = false ) {
 		$caption = "(No score)";
 	}
 	if ( $ret[0] == 'neutral' && $aband ) {
-		$ret[1] = 'fa-dot-circle-o text-muted';
+		$ret[1] = 'fa-minus text-muted';
 		$caption = "(No score: irrelevant)";
 	}
 	$response = '<span title="' . $caption;

@@ -16,14 +16,14 @@ $gUsers = array(
 	'zuzak'
 );
 
-echo '<table class="table">';
+/*echo '<table class="table">';
 echo construct_row( [
 		array( '<abbr title="Github" class="fa fa-fw fa-github-alt"></abbr>', 'status text-info text-center' ),
 		'Repo',
 		'Summary',
 		'User',
 		'Build'
-	], 'h' );
+	], 'h' ); */
 
 
 foreach ( $gRepos as $repo ) {
@@ -80,15 +80,15 @@ foreach ( $gRepos as $repo ) {
 				}
 			}
 
-			$verified = array( "<span title=\"$title\"><i class=\"fa fa-fw $icon\"></i>" . $status->state . '</span>', $class );
+			$verified = array( "<span title=\"$title\"><i class=\"fa fa-fw $icon\"></i>" . $status->state . '</span>', $class . '" colspan="2' );
 
 			$columns = [
 				$state,
-				'<a href="' . $datum->base->repo->html_url . '">' . $datum->base->repo->full_name . '</a>',
+				array( '<a href="' . $datum->base->repo->html_url . '">' . $datum->base->repo->full_name . '</a>', 'github-project' ),
 				'<a href="' . $datum->html_url . '">' . $datum->title . '</a>',
 				'<a href="' . $datum->user->html_url . '">' .
-				'<img src="//www.gravatar.com/avatar/' . $datum->user->gravatar_id. '.jpg?s=25&d=blank" />&nbsp;' .
-				$datum->user->login . '</a>',
+				'<img src="//www.gravatar.com/avatar/' . $datum->user->gravatar_id. '.jpg?s=25&d=blank" title="' .
+				$datum->user->login . '" /></a>',
 				$verified,
 			];
 
