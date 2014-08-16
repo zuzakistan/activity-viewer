@@ -54,6 +54,7 @@ function parse_gerrit( $data ) {
 	$icon = "";
 	$class = 'status text-center ';
 	$title = $data->status;
+	$aband = false;
 	if ( $data->status == 'MERGED' ) {
 		$icon = 'fa-smile-o text-success';
 		$class .= "success";
@@ -62,10 +63,11 @@ function parse_gerrit( $data ) {
 		$icon = 'fa-trash-o text-danger';
 		$class .= "danger";
 		$title = 'Change has been abandoned.';
+		$aband = true;
 	} else if ( $data->status == 'DRAFT' ) {
 		$icon = 'fa-file';
 		$title = 'Change is a draft.';
-	} else if ( calc_state( $data, 'Code-Review', true ) < 0 ) {
+	} else if ( calc_state( $data, 'Code-Review', $aband, true ) < 0 ) {
 		$icon = 'fa-warning text-warning';
 		$class .= "warning";
 		$title = 'There is a problem with this change that needs fixing.';
@@ -82,8 +84,8 @@ function parse_gerrit( $data ) {
 		'<img class="gravatar" src="' . get_gravatar( $data->owner->email ) . '?s=25&d=blank" />&nbsp;' . $data->owner->name .
 		'</a>',
 
-		calc_state( $data, 'Code-Review' ),
-		calc_state( $data, 'Verified' ),
+		calc_state( $data, 'Code-Review', $aband ),
+		calc_state( $data, 'Verified', $aband ),
 	];
 	// classes:
 	return construct_row( $columns, 'd' ); //$class );
@@ -111,7 +113,7 @@ function construct_row( $row, $type = 'd', $class = '' ) {
 	$str .= "</tr>";
 	return $str;
 }
-function calc_state( $data, $status, $raw = false ) {
+function calc_state( $data, $status, $aband, $raw = false ) {
 	$labels = $data->labels->{$status};
 	$states = [
 		['rejected', 'fa-ban text-danger','-2'],
@@ -132,7 +134,11 @@ function calc_state( $data, $status, $raw = false ) {
 	if ( property_exists( $labels->values, $ret[2] ) ) {
 		$caption = $labels->values->{$ret[2]};
 	} else {
-		$caption = "(not specified)";
+		$caption = "(No score)";
+	}
+	if ( $ret[0] == 'neutral' && $aband ) {
+		$ret[1] = 'fa-dot-circle-o text-muted';
+		$caption = "(No score: irrelevant)";
 	}
 	$response = '<span title="' . $caption;
 	$response .= '" class="' . $ret[0];
