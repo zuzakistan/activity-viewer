@@ -4,6 +4,7 @@ $gEmails = [
 	'douglas@chippy.ch',
 	'danharibo+wt@gmail.com',
 ];
+$changeIds = array();
 
 $qString = '';
 foreach ( $gEmails as $email ) {
@@ -23,7 +24,16 @@ echo construct_row( [
 	'<abbr title="Verified">V</abbr>',
 ], 'h' );*/
 foreach( $res as $change ) {
-	echo parse_gerrit( get_gerrit( $change->change_id ) );
+	if ( isset( $_GET['json'] ) ) {
+		array_push( $changeIds, $change->_number );
+	} else {
+		echo parse_gerrit( get_gerrit( $change->change_id ) );
+	}
+}
+if ( isset( $_GET['json'] ) ) {
+	header( 'Content-Type: application/json' );
+	echo json_encode( $changeIds );
+	die();
 }
 //echo "</table>";
 
@@ -86,6 +96,7 @@ function parse_gerrit( $data ) {
 
 		calc_state( $data, 'Code-Review', $aband ),
 		calc_state( $data, 'Verified', $aband ),
+		array( "<i title=\"" . $title . "\" class=\"fa $icon fa-fw text-center\"></i><span class=\"fallback\">" . $data->status . '</span>', $class ),
 	];
 	// classes:
 	return construct_row( $columns, 'd' ); //$class );
@@ -125,6 +136,7 @@ function calc_state( $data, $status, $aband, $raw = false ) {
 	foreach ( $states as $state ) {
 		if ( property_exists( $labels, $state[0] ) ) {
 			$ret = $state;
+			$caption = " by " . $labels->{$state[0]}->name;
 			break;
 		}
 	}
@@ -132,13 +144,13 @@ function calc_state( $data, $status, $aband, $raw = false ) {
 		return $ret[2];
 	}
 	if ( property_exists( $labels->values, $ret[2] ) ) {
-		$caption = $labels->values->{$ret[2]};
+		$caption = $labels->values->{$ret[2]} . $caption;
 	} else {
 		$caption = "(No score)";
 	}
 	if ( $ret[0] == 'neutral' && $aband ) {
 		$ret[1] = 'fa-minus text-muted';
-		$caption = "(No score: irrelevant)";
+		$caption = "(No score)";
 	}
 	$response = '<span title="' . $caption;
 	$response .= '" class="' . $ret[0];
@@ -161,6 +173,12 @@ function get_project( $str ) {
 			$url = '//mediawiki.org/wiki/Extension:' . $project[2];
 		} else if ( $project[1] == 'core' ) {
 			$url = '//mediawiki.org';
+		} else if ( $project[1] == 'vagrant' ) {
+			$url = '//mediawiki.org/wiki/MediaWiki-Vagrant';
+		}
+	} else if ( $project[0] == 'wikimedia' ) {
+		if ( $project[1] == 'TransparencyReport' ) {
+			$url = '//transparency.wikimedia.org';
 		}
 	}
 	if ( !isset( $url ) ) {

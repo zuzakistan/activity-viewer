@@ -66,21 +66,29 @@ foreach ( $gRepos as $repo ) {
 			} else if ( $status->state == 'failure' ) {
 				$icon = 'fa-thumbs-down';
 				$class .= 'text-danger';
+				$text = 'Bad build';
 			} else if ( $status->state == 'success' ) {
 				$icon = 'fa-thumbs-up';
 				$class .= 'text-success';
+				$text = 'Good build';
 			} else if ( $status->state == 'error' ) {
 				$icon = 'fa-exclamation';
 				$class .= 'text-warning';
+				$text = 'Build error';
 			} else {
 				$icon = 'fa-circle-o';
 				$class .= 'text-muted';
 				if ( !$status->state ) {
+					$icon = 'fa-minus';
 					$status->state = 'untested';
+					$text = 'No build';
+				} else {
+					$text = $status->state;
 				}
 			}
 
-			$verified = array( "<span title=\"$title\"><i class=\"fa fa-fw $icon\"></i>" . $status->state . '</span>', $class . '" colspan="2' );
+			//$verified = array( "<span title=\"$title\"><i class=\"fa fa-fw $icon\"></i>" . $status->state . '</span>', $class . '" colspan="2' );
+			$verified = array( "<span title=\"$title\">$text</span>", $class . ' text-right" colspan="2"' );
 
 			$columns = [
 				$state,
@@ -90,6 +98,7 @@ foreach ( $gRepos as $repo ) {
 				'<img src="//www.gravatar.com/avatar/' . $datum->user->gravatar_id. '.jpg?s=25&d=blank" title="' .
 				$datum->user->login . '" /></a>',
 				$verified,
+				$state,
 			];
 
 			echo construct_row( $columns, 'd' );

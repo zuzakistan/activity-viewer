@@ -10,13 +10,12 @@ function get( selector, url, description ) {
 	$( selector ).hide();
 	$.get( url , function ( data ) {
 		$( selector ).html( data );
-		$( selector ).fadeIn();
 		updateSpinner( '-', description );
+		$( selector ).fadeIn();
 	} );
 }
 
 function updateSpinner( polarity, description ) {
-	console.log( polarity, spinner, description );
 	if ( polarity == '+' ) {
 		spinner.push( description );
 	} else {
